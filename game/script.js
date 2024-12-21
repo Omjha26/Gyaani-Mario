@@ -14,14 +14,32 @@ const speedIntervalTime = 500;
 let gameRunning = true;
 let showingPopup = false;
 
+const jumpSound = new Audio('../sounds/Mario-jump-sound.mp3'); 
+jumpSound.load();
+
+const gameOverSound = new Audio('../sounds/game-over-sound2.mp3');
+gameOverSound.load();
+
+const backgroundMusic = new Audio('../sounds/aboveground_bgm.ogg');
+backgroundMusic.loop = true;  
+backgroundMusic.volume = 0.8; 
+
+
 const jump = () => {
   if (gameRunning && !showingPopup) {
+    jumpSound.play();
     mario.classList.add('jump');
     setTimeout(() => {
       mario.classList.remove('jump');
     }, 500);
   }
 };
+
+document.addEventListener('keydown', () => {
+  if (!backgroundMusic.playing) {
+    backgroundMusic.play();
+  }
+});
 
 pipe.style.animation = 'none';
 
@@ -70,6 +88,8 @@ const loop = setInterval(() => {
   if (pipePosition <= 120 && pipePosition > 0 && marioPosition < 80) {
     gameRunning = false;
 
+    gameOverSound.play();
+
     mario.style.animation = 'none';
     mario.style.bottom = `${marioPosition}px`;
 
@@ -83,6 +103,8 @@ const loop = setInterval(() => {
     gameOver.textContent = "Game over";
 
     clearInterval(loop);
+
+    backgroundMusic.pause();
 
     summaryScreen.style.display = 'block';
   }
